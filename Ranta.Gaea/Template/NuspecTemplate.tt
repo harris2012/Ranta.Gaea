@@ -1,0 +1,66 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    if (this.Solution != null)
+    {
+#>
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id><#=this.Solution.FullName#></id>
+    <version>1.0.0.0</version>
+    <title><#=this.Solution.FullName#></title>
+    <authors>Harris Zhang</authors>
+    <owners>Harris Zhang</owners>
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description><#=this.Solution.FullName#></description>
+    <releaseNotes><#=this.Solution.FullName#></releaseNotes>
+    <copyright>Copyright ranta 2016</copyright>
+    <tags><#=this.Solution.FullName.Replace(".", " ")#></tags>
+    <dependencies>
+      <dependency id="" version="" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="web.config.transform" target="content" />
+    <file src="app.config.transform" target="content" />
+<#
+    if (this.Solution.ProjectList != null && this.Solution.ProjectList.Count > 0)
+    {
+        foreach (var project in this.Solution.ProjectList.Where(v => v.Compile))
+        {
+            switch (project.ProjectType)
+            {
+                case Model.ProjectType.Net40:
+#>
+    <file src="<#=project.FullName#>\bin\Release\\<#=project.Name#>.dll" target="lib\net40" />
+    <file src="<#=project.FullName#>\bin\Release\\<#=project.Name#>.xml" target="lib\net40" />
+<#
+                    break;
+                case Model.ProjectType.Net45:
+#>
+    <file src="<#=project.FullName#>\bin\Release\\<#=project.Name#>.dll" target="lib\net45" />
+    <file src="<#=project.FullName#>\bin\Release\\<#=project.Name#>.xml" target="lib\net45" />
+<#
+                    break;
+                case Model.ProjectType.Test:
+                default:
+                    break;
+            }
+        }
+    }
+#>
+  </files>
+</package>
+<#
+    }
+#>

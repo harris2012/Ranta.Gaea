@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Ranta.Gaea.Controls.FolderPathTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Ranta.Gaea.Controls"
+             xmlns:i="clr-namespace:System.Windows.Input;assembly=PresentationCore"
+             mc:Ignorable="d"
+             x:Name="FPTB"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <i:RoutedCommand x:Key="BrowseCommand" />
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="5" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBox
+            Grid.Column="0"
+            x:Name="InputTextBox"
+            TextChanged="InputTextBox_TextChanged"
+            Background="Transparent"
+            Text="{Binding Text, ElementName=FPTB, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="InputTextBox_PreviewKeyDown" />
+        <Popup x:Name="CompletePopup"
+               Width="{Binding ActualWidth, ElementName=InputTextBox, Mode=OneWay}"
+                StaysOpen="False" 
+                AllowsTransparency="True"
+                PopupAnimation="Slide"
+                PlacementTarget="{Binding ElementName=InputTextBox}"
+                Placement="Bottom">
+            <Border Background="White">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ListView Name="SuggestItemsListView"
+                              ItemsSource="{Binding Words, ElementName=FPTB}"
+                              PreviewKeyDown="SuggestItemsListView_PreviewKeyDown"
+                              SelectionChanged="SuggestItemsListView_SelectionChanged">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
+            </Border>
+        </Popup>
+        <Button Name="BrowserButton" Grid.Column="1" Command="{Binding Mode=OneWay, Source={StaticResource BrowseCommand}}">Browse</Button>
+    </Grid>
+    <UserControl.CommandBindings>
+        <CommandBinding
+            Command="{StaticResource BrowseCommand}"
+            CanExecute="BrowseCommand_CanExecute"
+            Executed="BrowseCommand_Executed" />
+    </UserControl.CommandBindings>
+</UserControl>
